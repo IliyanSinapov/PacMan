@@ -7,5 +7,13 @@
 }
 
 body {
-    background-color: #121212;
+    background-color: #121212da;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    border: #000 solid 2px;
+    border-radius: .2rem;
 }
