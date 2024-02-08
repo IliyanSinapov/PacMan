@@ -15,17 +15,24 @@ var paused = false;
 
 var maze = new Maze();
 maze.init();
+var coins;
 var player = new Player(_width / 2 - 16, _height / 2 + 48, _width, _height, maze);
 
 // Functions
 
 const update = () => {
     player.update();
+
+    coins = maze.coins;
 }
 
 const render = () => {
-    player.render(context);
     maze.render(context);
+    coins.forEach(coin => {
+        coin.render(context);
+    });
+
+    player.render(context);
 }
 
 // Event listeners
@@ -70,7 +77,11 @@ document.addEventListener('keydown', (event) => {
 setInterval(() => {
     if (paused) return;
 
+    // Clear the canvas
     context.clearRect(0, 0, _width, _height);
+    // Draw the background
+    context.fillStyle = '#011011';
+    context.fillRect(0, 0, _width, _height);
 
     update();
     render();

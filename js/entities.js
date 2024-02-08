@@ -6,7 +6,7 @@ class Player {
         this.x = x;
         this.y = y;
         this.size = 32;
-        this.movementSpeed = 1;
+        this.movementSpeed = 2.5;
         this.hasHitWall = false;
         this.direction = Direction.LEFT;
 
@@ -18,17 +18,20 @@ class Player {
 
         this.pendingDirection = null;
 
+        this.collectedCounsCount = 0;
+
         this.animationTick = 0;
         this.animationIndex = 0;
         this.animationSpeed = 2;
 
         this.spritesSrc = new Image();
-        this.spritesSrc.src = `../assets/PacMan.png`
+        this.spritesSrc.src = `../assets/images/PacMan.png`
     }
 
     update() {
         this.updateAnimation();
         this.isCollidingWithWall();
+        this.collectCoin();
         if (this.pendingDirection !== null) this.changeDirection();
 
         // Move player based on direction
@@ -41,10 +44,21 @@ class Player {
 
         // Check if player is out of playeable area
         if (this.x + this.size <= 0) this.x = this._width;
-        else if (this.x >= this._width) this.x = 0 - this.size;
+        else if (this.x >= this._width) this.x = 0;
 
-        if (this.y + this.size <= 0) this.y = this._height;
-        else if (this.y >= this._height) this.y = 0 - this.size;
+
+        if (this.y <= 352)
+            if (this.x + this.size <= 0) {
+                this.x = this._width - 32;
+                this.y = 352;
+                this.direction = Direction.LEFT;
+            }
+        else if (this.y >= 384)
+            if (this.x >= this._width) {
+                this.x = 0;
+                this.y = 352;
+                this.direction = Direction.RIGHT;
+            }
     }
 
     render(context) {
@@ -107,7 +121,6 @@ class Player {
     changeDirection() {
         const playerCoords = [Math.round(this.x / 32), Math.round(this.y / 32)];
 
-
         // Check if the player is at the center of a cell and if so, change direction
         switch (this.pendingDirection) {
 
@@ -119,17 +132,17 @@ class Player {
             case Direction.UP:
                 /*
                     Checks the direction that the player is currently moving in
-                    and if a cell adjacent to the player in the direction of pendingDirection is nto a wall, then the player will change direction
+                    and if a cell adjacent to the player in the direction of pendingDirection is not a wall, then the player will change direction
                     unless pendingDirection is null
                 */
                 if (this.direction === Direction.LEFT) {
-                    if (this.grid[playerCoords[1] - 1][playerCoords[0]] === 0){
+                    if (this.grid[playerCoords[1] - 1][playerCoords[0]] !== 1) {
                         this.direction = this.pendingDirection;
                         this.pendingDirection = null;
                         this.x = playerCoords[0] * 32;
                     }
                 } else if (this.direction === Direction.RIGHT) {
-                    if (this.grid[playerCoords[1] - 1][playerCoords[0]] === 0){
+                    if (this.grid[playerCoords[1] - 1][playerCoords[0]] !== 1) {
                         this.direction = this.pendingDirection;
                         this.pendingDirection = null;
                         this.x = playerCoords[0] * 32;
@@ -138,13 +151,13 @@ class Player {
                 break;
             case Direction.RIGHT:
                 if (this.direction === Direction.DOWN) {
-                    if (this.grid[playerCoords[1]][playerCoords[0] + 1] === 0){
+                    if (this.grid[playerCoords[1]][playerCoords[0] + 1] !== 1) {
                         this.direction = this.pendingDirection;
                         this.pendingDirection = null;
                         this.y = playerCoords[1] * 32;
                     }
                 } else if (this.direction === Direction.UP) {
-                    if (this.grid[playerCoords[1]][playerCoords[0] + 1] === 0){
+                    if (this.grid[playerCoords[1]][playerCoords[0] + 1] !== 1) {
                         this.y = playerCoords[1] * 32;
                         this.direction = this.pendingDirection;
                         this.pendingDirection = null;
@@ -153,13 +166,13 @@ class Player {
                 break;
             case Direction.DOWN:
                 if (this.direction === Direction.LEFT) {
-                    if (this.grid[playerCoords[1] + 1][playerCoords[0]] === 0){
+                    if (this.grid[playerCoords[1] + 1][playerCoords[0]] !== 1) {
                         this.direction = this.pendingDirection;
                         this.pendingDirection = null;
                         this.x = playerCoords[0] * 32;
                     }
                 } else if (this.direction === Direction.RIGHT) {
-                    if (this.grid[playerCoords[1] - 1][playerCoords[0]] === 0){
+                    if (this.grid[playerCoords[1] - 1][playerCoords[0]] !== 1) {
                         this.direction = this.pendingDirection;
                         this.pendingDirection = null;
                         this.x = playerCoords[0] * 32;
@@ -168,13 +181,13 @@ class Player {
                 break;
             case Direction.LEFT:
                 if (this.direction === Direction.DOWN) {
-                    if (this.grid[playerCoords[1]][playerCoords[0] - 1] === 0){
+                    if (this.grid[playerCoords[1]][playerCoords[0] - 1] !== 1) {
                         this.direction = this.pendingDirection;
                         this.pendingDirection = null;
                         this.y = playerCoords[1] * 32;
                     }
                 } else if (this.direction === Direction.UP) {
-                    if (this.grid[playerCoords[1]][playerCoords[0] - 1] === 0){
+                    if (this.grid[playerCoords[1]][playerCoords[0] - 1] !== 1) {
                         this.direction = this.pendingDirection;
                         this.pendingDirection = null;
                         this.y = playerCoords[1] * 32;
@@ -184,15 +197,32 @@ class Player {
         }
     }
 
+    collectCoin() {
+        const playerCoords = [Math.floor(this.x / 32), Math.floor(this.y / 32)];
+
+        if (this.grid[playerCoords[1]][playerCoords[0]] === 0) {
+            this.grid[playerCoords[1]][playerCoords[0]] = 3;
+            this.collectedCounsCount++;
+
+            this.maze.removeCoin(playerCoords[0], playerCoords[1]);
+        }
+    }
+
     // Check if player is colliding with a wall
     isCollidingWithWall() {
         let nextCells = null;
 
         let playerCoords = [this.x / 32, this.y / 32];
 
-        // Check if the player is colliding with a wall and if so, stop the player from moving
+        /*
+            Checks if a cell adjacent to the player ( in the direction the player is moving in ) is a wall
+            If the cell is a wall, then the player will stop moving and the player's position will be set to the edge of the wall
+            And hasHitWall will be set to true to stop the player from updating the animation and to draw the correct sprite based on the direction the player was lastly moving in
+            Also checks if the player is about to glitch through a wall and if so, stop the player from moving and set the player's position to the edge of the wall
+        */
         switch (this.direction) {
             case Direction.UP:
+                // Checks if the cell above the player is outside of the playeable area; if so, set nextCells to 1
                 if (Math.floor(this.y / 32) - 1 !== -1)
                     nextCells = this.grid[Math.floor(this.y / 32) - 1][Math.floor(this.x / 32)];
                 else nextCells = 1;
@@ -226,7 +256,7 @@ class Player {
                 }
             }
         } else {
-            this.movementSpeed = 4;
+            this.movementSpeed = 2.5;
             this.hasHitWall = false;
         }
 
@@ -302,6 +332,8 @@ class Wall {
         this.x = x;
         this.y = y;
         this.size = 32;
+        this.texture = new Image();
+        this.texture.src = "../assets/images/Wall.png";
     }
 }
 
@@ -309,6 +341,7 @@ class Maze {
     constructor() {
         this.grid = Grid;
         this.walls = [];
+        this.coins = [];
         this.playerCoords = {
             x: 0,
             y: 0
@@ -317,10 +350,15 @@ class Maze {
 
     // Initialize the maze and create walls based on the grid array
     init() {
+
         for (let y = 0; y < this.grid.length; y++) {
             for (let x = 0; x < this.grid[y].length; x++) {
                 if (this.grid[y][x] === 1) {
                     this.walls.push(new Wall(x * 32, y * 32));
+                }
+
+                if (this.grid[y][x] === 0) {
+                    this.coins.push(new Coin(x * 32, y * 32));
                 }
 
                 if (this.grid[y][x] === 5) {
@@ -329,15 +367,22 @@ class Maze {
                 }
             }
         }
+    }
 
+    removeCoin(x, y) {
+        this.coins = [];
+        for (let y = 0; y < this.grid.length; y++)
+            for (let x = 0; x < this.grid[y].length; x++)
+                if (this.grid[y][x] === 0)
+                    this.coins.push(new Coin(x * 32, y * 32));
 
+        console.log("coin removed!")
     }
 
     // Render the maze walls based on the walls array
     render(context) {
         for (let i = 0; i < this.walls.length; i++) {
-            context.fillStyle = "blue";
-            context.fillRect(this.walls[i].x, this.walls[i].y, this.walls[i].size, this.walls[i].size);
+            context.drawImage(this.walls[i].texture, this.walls[i].x, this.walls[i].y, this.walls[i].size, this.walls[i].size);
         }
     }
 }
@@ -348,7 +393,25 @@ class Ghost {
         this.y = y;
         this.direction = Direction.LEFT;
 
-        this.spritesSrc = `../assets/${color}Ghost.png`;
+        this.animationTick = 0;
+        this.animationIndex = 0;
+        this.animationSpeed = 2;
+
+        this.spriteSrc = `../assets/images${color}Ghost.png`;
+    }
+
+    updateAnimation() {
+        this.animationTick++;
+
+        if (this.animationTick >= this.animationSpeed) {
+            this.animationTick = 0;
+
+            this.animationIndex++;
+
+            if (this.animationIndex >= 2) {
+                this.animationIndex = 0;
+            }
+        }
     }
 }
 
@@ -357,7 +420,32 @@ class Coin {
         this.x = x;
         this.y = y;
 
-        this.spritesSrc = "../assets/Coin.png";
+        this.texture = new Image();
+        this.texture.src = "../assets/images/Coin.png";
+
+        this.animationTick = 0;
+        this.animationIndex = 0;
+        this.animationSpeed = 60;
+    }
+
+    render(context) {
+        this.updateAnimation();
+
+        context.drawImage(this.texture, this.animationIndex * 32, 0, 32, 32, this.x, this.y, 32, 32);
+    }
+
+    updateAnimation() {
+        this.animationTick++;
+
+        if (this.animationTick >= this.animationSpeed) {
+            this.animationTick = 0;
+
+            this.animationIndex++;
+
+            if (this.animationIndex >= 5) {
+                this.animationIndex = 0;
+            }
+        }
     }
 }
 
@@ -366,7 +454,7 @@ class Pill {
         this.x = x;
         this.y = y;
 
-        this.spritesSrc = "../assets/Pill.png";
+        this.spritesSrc = "../assets/imagesPill.png";
     }
 }
 
