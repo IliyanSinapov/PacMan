@@ -1,6 +1,8 @@
 const Player = await import("./entities.js").then(module => module.Player);
+const Ghost = await import("./entities.js").then(module => module.Ghost);
 const Maze = await import("./entities.js").then(module => module.Maze);
 const Direction = await import("./utils.js").then(module => module.Direction);
+const GhostImages = await import("./utils.js").then(module => module.GhostImages);
 
 
 // Constants
@@ -18,10 +20,19 @@ maze.init();
 var coins;
 var player = new Player(_width / 2 - 16, _height / 2 + 48, _width, _height, maze);
 
+var blinky = new Ghost( 11 * 32, 9 * 32, GhostImages[0], player.points, 0, _width, _height, maze);
+var pinky = new Ghost( 9 * 32, 11 * 32, GhostImages[1], player.points, 4000, _width, _height, maze);
+var kinky = new Ghost( 11 * 32, 11 * 32, GhostImages[2], player.points, 4000, _width, _height, maze);
+var clyde = new Ghost( 13 * 32, 11 * 32, GhostImages[3], player.points, 4000, _width, _height, maze);
+
 // Functions
 
 const update = () => {
     player.update();
+    blinky.update();
+    // pinky.update();
+    // kinky.update();
+    // clyde.update();
 
     coins = maze.coins;
 }
@@ -33,6 +44,10 @@ const render = () => {
     });
 
     player.render(context);
+    blinky.render(context);
+    pinky.render(context);
+    kinky.render(context);
+    clyde.render(context);
 }
 
 // Event listeners
