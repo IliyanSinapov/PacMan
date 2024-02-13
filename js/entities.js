@@ -1,5 +1,4 @@
-const Direction = await import("./utils.js").then(module => module.Direction);
-const Grid = await import("./utils.js").then(module => module.Grid);
+const worker = new Worker("js/pathfinder.js");
 
 class Player {
     constructor(x, y, _width, _height, maze) {
@@ -15,6 +14,8 @@ class Player {
 
         this.maze = maze;
         this.grid = maze.grid;
+
+        this.playerCoordsWithinGrid = [Math.round(this.x / 32), Math.round(this.y / 32)];
 
         this.pendingDirection = null;
 
@@ -42,6 +43,8 @@ class Player {
             case Direction.DOWN: this.y += this.movementSpeed; break;
             case Direction.LEFT: this.x -= this.movementSpeed; break;
         }
+
+        this.playerCoordsWithinGrid = [Math.round(this.x / 32), Math.round(this.y / 32)];
 
         // Check if player is out of playeable area
         if (this.x + this.size <= 0) this.x = this._width;
@@ -203,7 +206,7 @@ class Player {
 
         if (this.grid[playerCoords[1]][playerCoords[0]] === 0) {
             this.grid[playerCoords[1]][playerCoords[0]] = 3;
-            this.points++;
+            this.points += 10;
 
             this.maze.removeCoin(playerCoords[0], playerCoords[1]);
         }
@@ -387,55 +390,52 @@ class Maze {
 }
 
 class Ghost {
-    constructor(x, y, image, playerPoints, pointsNeededToMove, _width, _height, maze) {
+    constructor(x, y, image, _width, _height, maze, player) {
         this.x = Math.round(x / 32) * 32;
         this.y = Math.round(y / 32) * 32;
         this.sprite = image;
-        this.playerPoints = playerPoints;
-        this.pointsNeededToMove = pointsNeededToMove;
+        this.normalSprite = image;
 
         this._width = _width;
         this._height = _height;
 
         this.maze = maze;
-
         this.grid = this.maze.grid;
+        this.floodFillGrid = this.maze.grid;
+
+        this.player = player;
+
+        this.isScared = false;
+        this.isHunting = false;
+        this.path = null;
+        this.needsNewPath = false;
 
         this.direction = Direction.RIGHT
-        this.movementSpeed = 2;
+        this.pendingDirections = [];
+        this.movementSpeed = 2.5;
 
         this.animationTick = 0;
         this.animationIndex = 0;
         this.animationSpeed = 12;
 
         this.hasHitWall = false;
-        this.timer = 0;
 
-        this.possibleMoves;
-
+        // timer that is used to make desicions based on time/updates passed (example - every 300 updates the ghost decides wether to hunt or not the player)
+        this.huntingIntervals = 0;
         this.timer = 1;
     }
 
     update() {
         this.updateAnimation();
-
+        this.manageHunting();
+        this.move();
         this.isCollidingWithWall();
 
-
-        if (this.timer % 15 === 0 || this.hasHitWall === true) {
-            this.findPossibleMoves();
-        }
-        this.timer++;
-        switch (this.direction) {
-            case Direction.UP: this.y -= this.movementSpeed; break;
-            case Direction.RIGHT: this.x += this.movementSpeed; break;
-            case Direction.DOWN: this.y += this.movementSpeed; break;
-            case Direction.LEFT: this.x -= this.movementSpeed; break;
-        }
+        if (this.isScared === true) this.sprite.src = "../assets/images/ghostScared.png"
+        else this.sprite = this.normalSprite;
 
         if (this.x <= 0) this.x = this._width;
         else if (this.x >= this._width) this.x = 0;
-
 
         if (this.y <= 352) {
             if (this.x + this.size <= 0) {
@@ -458,10 +458,170 @@ class Ghost {
         if (this.hasHitWall === false)
             context.drawImage(this.sprite, this.animationIndex * 31, 0, 32, 32, this.x, this.y, 32, 32);
         else
-
             context.drawImage(this.sprite, 0, 0, 32, 32, this.x, this.y, 32, 32);
 
-        
+
+    }
+
+    manageHunting() {
+        this.huntingIntervals++;
+
+        if (this.huntingIntervals % 300 == 0 && this.isHunting === false) {
+            this.huntingIntervals = 1;
+            this.isHunting = Boolean(Math.round(Math.random()));
+        }
+
+        if (this.isHunting === true) {
+            this.needsNewPath = true
+            this.findPath();
+        };
+
+        if (this.isHunting && this.huntingIntervals % 1000 === 0) {
+            this.isHunting = false;
+            this.needsNewPath = false;
+            this.path = null;
+            this.huntingIntervals = 1;
+            this.direction = null;
+            this.x = Math.round(this.x / 32) * 32;
+            this.y = Math.round(this.y / 32) * 32;
+        } else if (this.hasReachedPlayer()) {
+            this.isHunting = false;
+            this.huntingIntervals = 1;
+            this.x = Math.round(this.x / 32) * 32
+            this.y = Math.round(this.y / 32) * 32
+            this.needsNewPath = false;
+        }
+    }
+
+    findPath() {
+
+        worker.postMessage({
+            start: {
+                x: Math.round(this.x / 32),
+                y: Math.round(this.y / 32)
+            },
+            goal: {
+                x: Math.round(this.player.x / 32),
+                y: Math.round(this.player.y / 32)
+            },
+            grid: this.maze.grid
+        });
+
+        worker.onmessage = (event) => {
+            this.path = event.data;
+        }
+    }
+
+    hasReachedPlayer() {
+
+    }
+
+    move() {
+        if (this.path !== null && this.isHunting === true) {
+            this.followPath();
+
+            const gridPos = {
+                x: Math.round(this.x / 32),
+                y: Math.round(this.y / 32)
+            }
+
+            switch (this.direction) {
+                case
+                    Direction.UP,
+                    Direction.DOWN:
+
+                    this.x = gridPos.x * 32;
+                    break;
+                case
+                    Direction.RIGHT,
+                    Direction.LEFT:
+
+                    this.y = gridPos.y * 32;
+                    break;
+            }
+        } else {
+            if (this.isScared === true) {
+                if (this.timer % (10 * 1.6) === 0 || this.hasHitWall === true)
+                    this.findPossibleMoves();
+            } else
+                if (this.timer % 10 === 0 || this.hasHitWall === true)
+                    this.findPossibleMoves();
+        }
+
+        switch (this.direction) {
+            case Direction.UP: this.y -= this.movementSpeed; break;
+            case Direction.RIGHT: this.x += this.movementSpeed; break;
+            case Direction.DOWN: this.y += this.movementSpeed; break;
+            case Direction.LEFT: this.x -= this.movementSpeed; break;
+        }
+
+        this.timer++;
+    }
+
+    followPath() {
+        const previousDirection = this.direction;
+
+        let gridPos = {
+            x: Math.round(this.x / 32),
+            y: Math.round(this.y / 32)
+        };
+        let neighnoringCells = [];
+        if (this.path[gridPos.y - 1][gridPos.x] !== -1) neighnoringCells.push({
+            direction: Direction.UP,
+            value: this.path[gridPos.y - 1][gridPos.x],
+            cellPosition: {
+                x: gridPos.x,
+                y: gridPos.y - 1
+            }
+        });
+        if (this.path[gridPos.y][gridPos.x + 1] !== -1) neighnoringCells.push({
+            direction: Direction.RIGHT,
+            value: this.path[gridPos.y][gridPos.x + 1],
+            cellPosition: {
+                x: gridPos.x + 1,
+                y: gridPos.y
+            }
+        });
+        if (this.path[gridPos.y + 1][gridPos.x] !== -1) neighnoringCells.push({
+            direction: Direction.DOWN,
+            value: this.path[gridPos.y + 1][gridPos.x],
+            cellPosition: {
+                x: gridPos.x,
+                y: gridPos.y + 1
+            }
+        });
+        if (this.path[gridPos.y][gridPos.x - 1] !== -1) neighnoringCells.push({
+            direction: Direction.LEFT,
+            value: this.path[gridPos.y][gridPos.x - 1],
+            cellPosition: {
+                x: gridPos.x - 1,
+                y: gridPos.y
+            }
+        });
+
+        neighnoringCells.sort((a, b) => a.value - b.value);
+            this.direction = neighnoringCells[0].direction
+
+        switch (previousDirection) {
+            case Direction.UP, Direction.DOWN:
+                this.x = gridPos.x * 32;
+                break;
+            case Direction.RIGHT:
+                this.y = gridPos.y * 32;
+                switch (this.direction) {
+                    case Direction.UP:
+                        this.x = Math.floor(this.x / 32) * 32 + 32
+                        break;
+                }
+                break;
+            case Direction.LEFT:
+                switch (this.direction) {
+                    case Direction.UP:
+                        this.x -= 14
+                        break;
+                }
+                break;
+        }
     }
 
     findPossibleMoves() {
@@ -470,10 +630,8 @@ class Ghost {
 
         const previousDirection = this.direction;
 
-
-
-        if (this.grid[gridPos[1]][gridPos[0] - 1] === 0) possibleMoves.push(Direction.LEFT);
-        if (this.grid[gridPos[1]][gridPos[0] + 1] === 0) possibleMoves.push(Direction.RIGHT);
+        if (this.grid[gridPos[1]][gridPos[0] - 1] !== 1) possibleMoves.push(Direction.LEFT);
+        if (this.grid[gridPos[1]][gridPos[0] + 1] !== 1) possibleMoves.push(Direction.RIGHT);
 
 
         if (Math.floor(this.y / 32 - 1) !== -1)
@@ -485,9 +643,6 @@ class Ghost {
         else if (this.direction === Direction.RIGHT) possibleMoves.splice(possibleMoves.indexOf(Direction.LEFT), 1);
         else if (this.direction === Direction.DOWN) possibleMoves.splice(possibleMoves.indexOf(Direction.UP), 1);
         else if (this.direction === Direction.LEFT) possibleMoves.splice(possibleMoves.indexOf(Direction.RIGHT), 1);
-
-        console.log(gridPos[1], gridPos[0], possibleMoves, this.direction)
-
 
         if (possibleMoves.includes(this.direction) && possibleMoves.length === 1) return;
 
@@ -502,7 +657,7 @@ class Ghost {
 
         switch (this.direction) {
             case Direction.UP:
-                this.y = gridPos[1] * 32 - 16;
+                this.y = gridPos[1] * 32;
                 switch (previousDirection) {
                     case Direction.RIGHT: this.x = gridPos[0] * 32; break;
                     case Direction.LEFT: this.x = gridPos[0] * 32; break;
@@ -559,18 +714,24 @@ class Ghost {
             if (this.direction === Direction.UP && ghostCoords[1] === Math.floor(ghostCoords[1])) {
                 this.movementSpeed = 0;
                 this.hasHitWall = true;
+                this.direction = null;
             } else if (this.direction === Direction.RIGHT && ghostCoords[0] === Math.floor(ghostCoords[0])) {
                 this.movementSpeed = 0;
                 this.hasHitWall = true;
+                this.direction = null;
             } else if (this.direction === Direction.DOWN) {
                 this.movementSpeed = 0;
                 this.hasHitWall = true;
+                this.direction = null;
             } else if (this.direction === Direction.LEFT && ghostCoords[0] === Math.floor(ghostCoords[0])) {
                 this.movementSpeed = 0;
                 this.hasHitWall = true;
+                this.direction = null;
             }
         } else {
-            this.movementSpeed = 2.5;
+
+            if (this.isScared === true) this.movementSpeed = 1.5;
+            else this.movementSpeed = 2.5;
             this.hasHitWall = false;
         }
 
@@ -670,5 +831,3 @@ class Pill {
         this.spritesSrc = "../assets/imagesPill.png";
     }
 }
-
-export { Player, Ghost, Coin, Pill, Maze, Wall };
