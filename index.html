@@ -1,20 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PacMan</title>
 
-    <link href="assets/icons/favicon.ico" type="image/x-icon" rel = "icon">
+    <link href="assets/icons/favicon.ico" type="image/x-icon" rel="icon">
     <link rel="stylesheet" href="stylesheets/styles.css">
 </head>
+
 <body>
-    
-    <canvas id = "canvas"></canvas>
-    
-    <script src = "js/utils.js" defer></script>
-    <script src = "js/entities.js" defer></script>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <div class="score">
+            <span>Score: </span>
+            <span id="score">0</span>
+        </div>
+        <div class="lives" id="lives">
+            <img src="assets/images/heart.png" alt="lives">
+            <img src="assets/images/heart.png" alt="lives">
+            <img src="assets/images/heart.png" alt="lives">
+        </div>
+        <div class="level">
+            <span>Level: </span>
+            <span id="level">1</span>
+        </div>
+    </div>
+
+
+
+    <script src="js/utils.js" defer></script>
+    <script src="js/entities.js" defer></script>
     <script src="js/app.js" defer></script>
-    <!-- <script src = "js/pathfinder.js" defer></script> -->
 </body>
+
 </html>
