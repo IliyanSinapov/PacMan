@@ -37,9 +37,9 @@ const update = () => {
 
     player.update();
     blinky.update();
-    // pinky.update();
-    // kinky.update();
-    // clyde.update();
+    pinky.update();
+    kinky.update();
+    clyde.update();
 
     document.getElementById("score").innerText = player.score;
 }
