@@ -5,36 +5,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PacMan</title>
-
     <link href="assets/icons/favicon.ico" type="image/x-icon" rel="icon">
     <link rel="stylesheet" href="stylesheets/styles.css">
+
+
+    <style>
+        body {
+            background-color: #121212;
+        }
+    </style>
 </head>
 
 <body>
 
-    <canvas id="canvas"></canvas>
+    <div class="menu">
+        <div class="info">
+            <h1 class="header">PacMan</h1>
+            <h3 class="best-score-text">Best Score:</h3>
+            <h2 class="best-score">0</h2>
+        </div>
 
-    <div class="ui">
-        <div class="score">
-            <span>Score: </span>
-            <span id="score">0</span>
-        </div>
-        <div class="lives" id="lives">
-            <img src="assets/images/heart.png" alt="lives">
-            <img src="assets/images/heart.png" alt="lives">
-            <img src="assets/images/heart.png" alt="lives">
-        </div>
-        <div class="level">
-            <span>Level: </span>
-            <span id="level">1</span>
+        <div class="buttons">
+            <button class="ui-button menu-button" id="start"><span>Play</span></button>
+            <button class="ui-button menu-button" id="settings"><span>Settings</span></button>
+            <button class="ui-button menu-button" id="exit"><span>Exit</span></button>
         </div>
     </div>
 
 
+    <div class="settings">
+        <div class="settings-info">
+            <h1 class="header">Settings</h1>
+        </div>
 
-    <script src="js/utils.js" defer></script>
-    <script src="js/entities.js" defer></script>
-    <script src="js/app.js" defer></script>
+        <div class="sound-settings">
+            <div class="sound">
+                <div class="audio-level-indicator-container">
+                    <p>Sound: </p>
+                    <p id="sound-level"></p>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="volume" id="sound" min="0" max="100" step="5" value="50">
+                </div>
+            </div>
+            <div class="sound">
+                <div class="audio-level-indicator-container">
+                    <p>Music: </p>
+                    <p id="music-level"></p>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="volume" id="music" min="0" max="100" step="5" value="50">
+                </div>
+            </div>
+        </div>
+
+        <div class="key-settings">
+            <button class="ui-button" id="key-bindings"><span>Key Binds</span></button>
+
+            <div class="key-select">
+                <div class="key-selector" id="up">
+                    <p>Up: </p>
+                    <select id="up">
+                        <option class="key" value="w" selected>W</option>
+                        <option class="key" value="ArrowUp">Arrow Up</option>
+                    </select>
+                </div>
+                <div class="key-selector" id="right">
+                    <p>Right: </p>
+                    <select id="right">
+                        <option class="key" value="d" selected>D</option>
+                        <option class="key" value="ArrowRight">Arrow Right</option>
+                    </select>
+                </div>
+                <div class="key-selector" id="down">
+                    <p>Down: </p>
+                    <select id="down">
+                        <option class="key" value="s" selected>S</option>
+                        <option class="key" value="ArrowDown">Arrow Down</option>
+                    </select>
+                </div>
+                <div class="key-selector" id="left">
+                    <p>Left: </p>
+                    <select id="left">
+                        <option class="key" value="a" selected>A</option>
+                        <option class="key" value="ArrowLeft">Arrow Left</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button class="ui-button" id="back"><span>Back</span></button>
+    </div>
+
+    <div class="game">
+        <canvas id="canvas"></canvas>
+
+        <div class="game-ui">
+            <div class="score">
+                <h3>Score: </h3>
+                <h2 id="score">0</h2>
+            </div>
+            <div class="lives" id="lives">
+                
+            </div>
+            <div class="level">
+                <span>Level: </span>
+                <span id="level">1</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-over">
+        <h1 class="header">Game Over</h1>
+        <h2 class="score">Score: <h2 class = "game-score"></h2></h2>
+        <button class="ui-button" id="restart"><span>Restart</span></button>
+        <button class="ui-button" id="menu"><span>Main Menu</span></button>
+    </div>
+
+    <span class="scripts">
+        <script src="js/utils.js" defer></script>
+        <script src="js/entities.js" defer></script>
+        <script src="js/game.js" defer></script>
+
+        <script src="js/gameOver.js" defer></script>
+        <script src="js/settings.js" defer></script>
+        <script src="js/menu.js" defer></script>
+    </span>
 </body>
 
 </html>

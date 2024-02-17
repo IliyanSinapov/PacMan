@@ -47,6 +47,22 @@ GhostImages[3].src = '../assets/images/clyde.png';
 GhostImages[4].src = '../assets/images/funky.png';
 GhostImages[5].src = '../assets/images/ghostScared.png';
 
+var sounds = {
+    slect: new Audio('../assets/sounds/select.wav'),
+    powerUp: new Audio('../assets/sounds/powerUp.wav'),
+    died: new Audio('../assets/sounds/died.mp3'),
+    ateAGhost: new Audio('../assets/sounds/ateAGhost.wav'),
+    start: new Audio('../assets/sounds/start.mp3'),
+    ghostScared: new Audio('../assets/sounds/ghostScared.mp3'),
+    wakaWaka: new Audio('../assets/sounds/audiomass-output(1).mp3')
+}
+
+sounds.wakaWaka.playbackRate = 2.5;
+
+var music = new Audio('../assets/sounds/menu.wav');
+music.volume = .5
+music.loop = true;
+
 const isCNextCellAWall = (entityCoords, direction) => {
     let nextCells = null;
 

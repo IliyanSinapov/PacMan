@@ -273,12 +273,15 @@ class Player {
                     this.ghosts[i].path = null;
                     this.ghosts[i].hasReachedPlayer = false;
                     this.timer = 0;
+                    sounds.ateAGhost.play();
                     continue;
                 }
 
                 if (ghost.isScared === false) {
                     this.ghosts[i].hasReachedPlayer = true;
                     this.hasHitGhost = true;
+                    sounds.died.play();
+                    this.animationIndex = 0;
                     this.timer = 0;
                 }
             }
@@ -294,6 +297,7 @@ class Player {
         this.animationIndex = 0;
         this.animationSpeed = 2;
         this.spritesSrc.src = `../assets/images/PacMan.png`
+
 
         for (let i = 0; i < this.ghosts.length; i++) {
             this.ghosts[i].x = this.ghosts[i].startingPosition.x;
@@ -326,6 +330,8 @@ class Player {
                     this.ghosts[i].isHunting = false;
                     this.ghosts[i].timer = 1;
                     this.ghosts[i].path = null;
+
+                    sounds.powerUp.play();
                 }
             }
         }
@@ -340,6 +346,7 @@ class Player {
                 this.y + 10 < coin.y + coin.size &&
                 this.y + this.size - 10 > coin.y) {
                 this.maze.coins.splice(i, 1);
+                sounds.wakaWaka.play();
                 this.score += 10;
             }
         }
@@ -458,8 +465,14 @@ class Ghost {
         this.move();
         this.isCollidingWithWall();
 
-        if (this.isScared === true) this.sprite.src = "../assets/images/ghostScared.png"
-        else this.sprite.src = this.normalSprite;
+        if (this.isScared === true) {
+            this.sprite.src = "../assets/images/ghostScared.png"
+            sounds.ghostScared.play();
+        }
+        else {
+            this.sprite.src = this.normalSprite;
+            sounds.ghostScared.pause();
+        }
 
         if (this.x <= 0) this.x = this._width;
         else if (this.x >= this._width) this.x = 0;
@@ -827,7 +840,7 @@ class Maze {
             }
         }
     }
-    
+
     // Render the maze walls based on the walls array
     render(context) {
         for (let i = 0; i < this.walls.length; i++)
