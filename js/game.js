@@ -60,7 +60,9 @@ const render = () => {
 const restartLevel = () => {
     maze.init();
 
+    currentScore = player.score;
     player = new Player(_width / 2 - 16, _height / 2 + 48, _width, _height, maze);
+    player.score = currentScore;
 
     blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
     pinky = new Ghost(11 * 32, 11 * 32, GhostImages[1], _width, _height, maze, player);
@@ -124,15 +126,22 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'p') paused = !paused;
 });
 
-setInterval(() => {
-    if (starting) return;
+const gameLoop = () => {
+    if (starting) {
+        requestAnimationFrame(gameLoop);
+        return;
+    }
 
-    if (paused) return;
+    if (paused) {
+        requestAnimationFrame(gameLoop);
+        return;
+    }
 
     if (gameOver) {
         music.pause();
         renderGameOverScreen();
         music.play();
+        requestAnimationFrame(gameLoop);
         return;
     }
 
@@ -157,7 +166,6 @@ setInterval(() => {
         }, 300);
     }
 
-
     // Clear the canvas
     context.clearRect(0, 0, _width, _height);
     // Draw the background
@@ -166,12 +174,15 @@ setInterval(() => {
 
     update();
     render();
-}, 1000 / 240);
+
+    requestAnimationFrame(gameLoop);
+}
 
 const start = () => {
     starting = true;
     restartLevel();
     render();
+    music.pause();
     sounds.start.play();
     setTimeout(() => {
         paused = false;
@@ -185,5 +196,7 @@ const start = () => {
                                         <img src="assets/images/heart.png" alt="lives">`;
 
         starting = false;
+
+        gameLoop();
     }, 4600)
 }

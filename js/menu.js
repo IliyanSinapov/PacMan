@@ -11,7 +11,7 @@ const buttons = {
     keyBindings: document.querySelector('#key-bindings')
 }
 
-setTimeout(() => { music.play(); }, 200)
+music.play();
 
 Object.values(sounds).forEach(sound => {
     sound.volume = silders.sound.value / 100;

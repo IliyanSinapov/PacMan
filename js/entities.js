@@ -541,6 +541,9 @@ class Ghost {
         if (this.isScared === true) {
             if (this.timer % 600 === 0) {
                 this.isScared = false;
+                this.x = Math.round(this.x / 32) * 32;
+                this.y = Math.round(this.y / 32) * 32;
+                this.path = null;
             }
         }
     }
@@ -572,13 +575,13 @@ class Ghost {
                 x: Math.round(this.x / 32),
                 y: Math.round(this.y / 32)
             }
-
+            
             switch (this.direction) {
                 case
                     Direction.UP,
                     Direction.DOWN:
-
                     this.x = gridPos.x * 32;
+
                     break;
                 case
                     Direction.RIGHT,
@@ -675,7 +678,7 @@ class Ghost {
             case Direction.LEFT:
                 switch (this.direction) {
                     case Direction.UP:
-                        this.x -= 14
+                        this.x -= 16
                         break;
                 }
                 break;

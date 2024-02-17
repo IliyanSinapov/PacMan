@@ -5,6 +5,8 @@ const restart = document.querySelector('#restart');
 const close = document.querySelector('#menu');
 
 restart.addEventListener('click', () => {
+    bestScoreElement.innerText = localStorage.getItem('PacMan_BestScore');
+
     gameOver = false;
     music.pause();
     sounds.slect.play();
@@ -14,6 +16,8 @@ restart.addEventListener('click', () => {
 });
 
 close.addEventListener('click', () => {
+    bestScoreElement.innerText = localStorage.getItem('PacMan_BestScore');
+
     sounds.slect.play();
     gameOverScreen.style.display = 'none';
     menuUi.style.display = 'flex';
@@ -26,7 +30,7 @@ const renderGameOverScreen = () => {
         return;
     }
 
-    if (player.score > parseInt(localStorage.getItem('PacMan_BestScore'))){
+    if (player.score > parseInt(localStorage.getItem('PacMan_BestScore'))) {
         localStorage.setItem('PacMan_BestScore', player.score);
     }
 
@@ -34,6 +38,6 @@ const renderGameOverScreen = () => {
     gameOverScreen.style.display = 'flex';
     gameScore.innerText = player.score;
     music.src = 'assets/sounds/menu.wav';
-    
+
     isGameOver = true;
 }
