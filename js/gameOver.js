@@ -7,6 +7,8 @@ const close = document.querySelector('#menu');
 restart.addEventListener('click', () => {
     bestScoreElement.innerText = localStorage.getItem('PacMan_BestScore');
 
+    isGameOver = false;
+
     gameOver = false;
     music.pause();
     sounds.slect.play();
@@ -17,6 +19,8 @@ restart.addEventListener('click', () => {
 
 close.addEventListener('click', () => {
     bestScoreElement.innerText = localStorage.getItem('PacMan_BestScore');
+
+    isGameOver = false;
 
     sounds.slect.play();
     gameOverScreen.style.display = 'none';

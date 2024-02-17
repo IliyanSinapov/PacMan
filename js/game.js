@@ -127,15 +127,9 @@ document.addEventListener('keydown', (event) => {
 });
 
 const gameLoop = () => {
-    if (starting) {
-        requestAnimationFrame(gameLoop);
-        return;
-    }
+    if (starting) return;
 
-    if (paused) {
-        requestAnimationFrame(gameLoop);
-        return;
-    }
+    if (paused) return;
 
     if (gameOver) {
         music.pause();

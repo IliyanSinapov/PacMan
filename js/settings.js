@@ -7,6 +7,8 @@ const backButton = document.querySelector('#back');
 
 const keys = document.querySelectorAll('.key[selected]');
 
+
+
 const keyBindings = {
     up: keys[0].value,
     right: keys[1].value,
@@ -40,7 +42,7 @@ silders.sound.addEventListener('input', () => {
         sound.volume = silders.sound.value / 100;
     });
 
-    
+
 
     if (silders.sound.value == 0) {
         soundText.innerHTML = "Off";
@@ -91,6 +93,9 @@ slectors.forEach(selector => {
     selectorKeys = Object.values(selector.children[1].children);
     selectorKeys.forEach(key => {
         key.addEventListener('click', () => {
+
+            console.log(key.parentNode.id);
+
             switch (key.parentNode.id) {
                 case 'up': keyBindings.up = key.value; break;
                 case 'right': keyBindings.right = key.value; break;
@@ -98,6 +103,8 @@ slectors.forEach(selector => {
                 case 'left': keyBindings.left = key.value; break;
             }
             setSelectedKey(key.parentNode.id);
+
+            console.log(keyBindings);
         });
     });
 });
