@@ -33,7 +33,7 @@ const renderGameOverScreen = () => {
     game.style.display = 'none';
     gameOverScreen.style.display = 'flex';
     gameScore.innerText = player.score;
-    music.src = '../assets/sounds/menu.wav';
+    music.src = 'assets/sounds/menu.wav';
     
     isGameOver = true;
 }

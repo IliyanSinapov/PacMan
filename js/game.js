@@ -176,7 +176,7 @@ const start = () => {
     setTimeout(() => {
         paused = false;
         gameOver = false;
-        music.src = "../assets/sounds/game.mp3";
+        music.src = "assets/sounds/game.mp3";
         music.loop = true;
         music.play();
         document.querySelector('.lives').innerHTML = `

@@ -38,7 +38,7 @@ class Player {
         this.animationSpeed = 2;
 
         this.spritesSrc = new Image();
-        this.spritesSrc.src = `../assets/images/PacMan.png`
+        this.spritesSrc.src = `assets/images/PacMan.png`
     }
 
     update() {
@@ -58,7 +58,7 @@ class Player {
 
         if (this.hasHitGhost === true && this.hasEatenPill === false) {
             this.animationSpeed = 12;
-            this.spritesSrc.src = `../assets/images/PacManDead.png`
+            this.spritesSrc.src = `assets/images/PacManDead.png`
         }
 
         if (this.hasHitGhost === true && this.hasEatenPill === false) this.movementSpeed = 0;
@@ -296,7 +296,7 @@ class Player {
         this.direction = Direction.LEFT;
         this.animationIndex = 0;
         this.animationSpeed = 2;
-        this.spritesSrc.src = `../assets/images/PacMan.png`
+        this.spritesSrc.src = `assets/images/PacMan.png`
 
 
         for (let i = 0; i < this.ghosts.length; i++) {
@@ -466,7 +466,7 @@ class Ghost {
         this.isCollidingWithWall();
 
         if (this.isScared === true) {
-            this.sprite.src = "../assets/images/ghostScared.png"
+            this.sprite.src = "assets/images/ghostScared.png"
             sounds.ghostScared.play();
         }
         else {
@@ -800,7 +800,7 @@ class Wall {
         this.y = y;
         this.size = 32;
         this.texture = new Image();
-        this.texture.src = "../assets/images/Wall.png";
+        this.texture.src = "assets/images/Wall.png";
     }
 }
 
@@ -858,7 +858,7 @@ class Coin {
         this.size = 32
 
         this.texture = new Image();
-        this.texture.src = "../assets/images/Coin.png";
+        this.texture.src = "assets/images/Coin.png";
 
         this.animationTick = 0;
         this.animationIndex = 0;
@@ -893,7 +893,7 @@ class Pill {
         this.size = 32;
 
         this.texture = new Image();
-        this.texture.src = "../assets/images/pill.png";
+        this.texture.src = "assets/images/pill.png";
 
         this.animationTick = 0;
         this.animationIndex = 0;
