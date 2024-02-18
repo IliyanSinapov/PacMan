@@ -20,12 +20,12 @@ var coins;
 var player = new Player(_width / 2 - 16, _height / 2 + 48, _width, _height, maze);
 
 
-var blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
+// var blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
 var pinky = new Ghost(11 * 32, 11 * 32, GhostImages[1], _width, _height, maze, player);
 var kinky = new Ghost(13 * 32, 11 * 32, GhostImages[2], _width, _height, maze, player);
 var clyde = new Ghost(9 * 32, 11 * 32, GhostImages[3], _width, _height, maze, player);
 
-this.player.ghosts = [blinky, pinky, kinky, clyde];
+this.player.ghosts = [pinky, kinky, clyde];
 
 // Functions
 const update = () => {
@@ -36,7 +36,7 @@ const update = () => {
     }
 
     player.update();
-    blinky.update();
+    // blinky.update();
     pinky.update();
     kinky.update();
     clyde.update();
@@ -51,31 +51,39 @@ const render = () => {
     });
 
     player.render(context);
-    blinky.render(context);
+    // blinky.render(context);
     pinky.render(context);
     kinky.render(context);
     clyde.render(context);
 }
 
+const resetGhostImages = () => {
+    GhostImages[0].src = 'assets/images/blinky.png';
+    GhostImages[1].src = 'assets/images/pinky.png';
+    GhostImages[2].src = 'assets/images/kinky.png';
+    GhostImages[3].src = 'assets/images/clyde.png';
+    GhostImages[4].src = 'assets/images/funky.png';
+}
+
 const restartLevel = () => {
     maze.init();
-
+    resetGhostImages()
     currentScore = player.score;
     player = new Player(_width / 2 - 16, _height / 2 + 48, _width, _height, maze);
     player.score = currentScore;
 
-    blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
+    // blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
     pinky = new Ghost(11 * 32, 11 * 32, GhostImages[1], _width, _height, maze, player);
     kinky = new Ghost(13 * 32, 11 * 32, GhostImages[2], _width, _height, maze, player);
     clyde = new Ghost(9 * 32, 11 * 32, GhostImages[3], _width, _height, maze, player);
 
-    this.player.ghosts = [blinky, pinky, kinky, clyde];
+    this.player.ghosts = [pinky, kinky, clyde];
 
     player.x = _width / 2 - 16;
     player.y = _height / 2 + 48;
 
-    blinky.x = 11 * 32;
-    blinky.y = 9 * 32;
+    // blinky.x = 11 * 32;
+    // blinky.y = 9 * 32;
 
     pinky.x = 11 * 32;
     pinky.y = 11 * 32;
@@ -132,10 +140,13 @@ const gameLoop = () => {
     if (paused) return;
 
     if (gameOver) {
-        music.pause();
-        renderGameOverScreen();
-        music.play();
-        requestAnimationFrame(gameLoop);
+        if (!isGameOver) {
+            music.pause();
+            renderGameOverScreen();
+            music.play();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
         return;
     }
 

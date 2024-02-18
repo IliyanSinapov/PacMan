@@ -60,7 +60,6 @@ var sounds = {
 sounds.wakaWaka.playbackRate = 2.5;
 
 var music = new Audio('assets/sounds/menu.wav');
-music.volume = .5
 music.loop = true;
 
 const isCNextCellAWall = (entityCoords, direction) => {

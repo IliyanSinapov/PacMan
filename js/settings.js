@@ -35,6 +35,8 @@ silders.music.addEventListener('input', () => {
     } else {
         musicText.innerHTML = `${silders.music.value}%`;
     }
+
+    localStorage.setItem('PacMan_MusicVolume', silders.music.value);
 });
 
 silders.sound.addEventListener('input', () => {
@@ -49,6 +51,8 @@ silders.sound.addEventListener('input', () => {
     } else {
         soundText.innerHTML = `${silders.sound.value}%`;
     }
+
+    localStorage.setItem('PacMan_SoundVolume', silders.sound.value);
 });
 
 const keySelectEventHandler = () => {
@@ -68,6 +72,8 @@ keyBindButton.addEventListener('click', () => {
         backButton.style.transform = 'translateY(0%)';
         keySelect.style.animation = 'slideOut 0.5s ease-in forwards';
 
+        keyBindingSettingsChange();
+
         keySelect.addEventListener('animationend', keySelectEventHandler);
     } else {
         backButton.style.animation = 'animation: slideDown .7s ease-in-out forwards';
@@ -78,34 +84,37 @@ keyBindButton.addEventListener('click', () => {
 
 });
 
-// Add event listeners to update keyBindings object when key values change
-let selectorKeys;
-const slectors = document.querySelectorAll('.key-selector');
 
-const setSelectedKey = (selectedKey) => {
-    selectorKeys.forEach(key => {
-        key.removeAttribute('selected');
-        if (selectedKey === key.id) key.setAttribute('selected');
-    });
-}
 
-slectors.forEach(selector => {
-    selectorKeys = Object.values(selector.children[1].children);
-    selectorKeys.forEach(key => {
-        key.addEventListener('click', () => {
+backButton.addEventListener('click', () => {
+    keyBindingSettingsChange();
 
-            console.log(key.parentNode.id);
-
-            switch (key.parentNode.id) {
-                case 'up': keyBindings.up = key.value; break;
-                case 'right': keyBindings.right = key.value; break;
-                case 'down': keyBindings.down = key.value; break;
-                case 'left': keyBindings.left = key.value; break;
-            }
-            setSelectedKey(key.parentNode.id);
-
-            console.log(keyBindings);
-        });
-    });
+    sounds.slect.play();
+    settingsUi.style.display = 'none';
+    menuUi.style.display = 'flex';
 });
 
+const keyBindingSettingsChange = () => {
+    const initialKeyBindings = {
+        up: keyBindings.up,
+        right: keyBindings.right,
+        down: keyBindings.down,
+        left: keyBindings.left
+    }
+    const selectElements = document.querySelectorAll('select');
+
+    function hasUserMadeChanges() {
+        for (const select of selectElements) {
+            if (select.value !== initialKeyBindings[select.id]) {
+                return true;
+            }
+        }
+        return false;
+    }
+    if (hasUserMadeChanges()) {
+        keyBindings.up = selectElements[0].value;
+        keyBindings.right = selectElements[1].value;
+        keyBindings.down = selectElements[2].value;
+        keyBindings.left = selectElements[3].value;
+    }
+}

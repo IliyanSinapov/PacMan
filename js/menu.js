@@ -11,15 +11,32 @@ const buttons = {
     keyBindings: document.querySelector('#key-bindings')
 }
 
-music.play();
-
-Object.values(sounds).forEach(sound => {
-    sound.volume = silders.sound.value / 100;
-});
+var musicStarted = false;
 
 if (localStorage.getItem('PacMan_BestScore') === null)
     localStorage.setItem('PacMan_BestScore', 0);
 
+if (localStorage.getItem('PacMan_MusicVolume') === null)
+    localStorage.setItem('PacMan_MusicVolume', 50);
+
+if (localStorage.getItem('PacMan_SoundVolume') === null)
+    localStorage.setItem('PacMan_SoundVolume', 50);
+
+
+Object.values(sounds).forEach(sound => {
+    sound.volume = parseInt(localStorage.getItem('PacMan_SoundVolume')) / 100;
+});
+music.volume = parseInt(localStorage.getItem('PacMan_MusicVolume')) / 100;
+
+window.addEventListener("click", () => {
+    if (!musicStarted) {
+        music.play();
+        musicStarted = true;
+    }
+});
+
+silders.music.value = localStorage.getItem('PacMan_MusicVolume');
+silders.sound.value = localStorage.getItem('PacMan_SoundVolume');
 bestScoreElement.innerText = localStorage.getItem('PacMan_BestScore');
 
 buttons.start.addEventListener('click', () => {
@@ -35,12 +52,6 @@ buttons.settings.addEventListener('click', () => {
     sounds.slect.play();
     menuUi.style.display = 'none';
     settingsUi.style.display = 'flex';
-});
-
-buttons.back.addEventListener('click', () => {
-    sounds.slect.play();
-    settingsUi.style.display = 'none';
-    menuUi.style.display = 'flex';
 });
 
 buttons.exit.addEventListener('click', () => {

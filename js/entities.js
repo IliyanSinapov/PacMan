@@ -499,8 +499,6 @@ class Ghost {
             context.drawImage(this.sprite, this.animationIndex * 31, 0, 32, 32, this.x, this.y, 32, 32);
         else
             context.drawImage(this.sprite, 0, 0, 32, 32, this.x, this.y, 32, 32);
-
-
     }
 
     manageHunting() {
@@ -575,21 +573,22 @@ class Ghost {
                 x: Math.round(this.x / 32),
                 y: Math.round(this.y / 32)
             }
-            
+
             switch (this.direction) {
                 case
                     Direction.UP,
                     Direction.DOWN:
-                    this.x = gridPos.x * 32;
+                    this.x = Math.round(this.x / 32) * 32
+
 
                     break;
                 case
                     Direction.RIGHT,
                     Direction.LEFT:
-
-                    this.y = gridPos.y * 32;
+                    this.y = Math.round(this.y / 32) * 32;
                     break;
             }
+
         } else {
             if (this.isScared === true) {
                 if (this.timer % (10 * 1.6) === 0 || this.hasHitWall === true)
@@ -652,10 +651,17 @@ class Ghost {
 
         if (this.isHunting === true) {
             neighnoringCells.sort((a, b) => a.value - b.value);
+            if (previousDirection === neighnoringCells[0].direction) {
+                this.centerGhost(previousDirection, gridPos);
+                return;
+            }
             this.direction = neighnoringCells[0].direction
         } else if (this.isScared === true) {
             neighnoringCells.sort((a, b) => b.value - a.value);
-
+            if (previousDirection === neighnoringCells[0].direction) {
+                this.centerGhost(previousDirection, gridPos);
+                return;
+            }
             if (neighnoringCells[neighnoringCells.length - 1].value <= 10)
                 this.direction = neighnoringCells[0].direction
             else {
@@ -663,24 +669,26 @@ class Ghost {
                 this.isFarFromPlayer = true
             }
         }
+        this.centerGhost(previousDirection, gridPos);
+    }
+
+    centerGhost(previousDirection, gridPos) {
         switch (previousDirection) {
-            case Direction.UP, Direction.DOWN:
-                this.x = gridPos.x * 32;
+            case Direction.DOWN:
+                if (this.direction === Direction.LEFT || this.direction === Direction.RIGHT)
+                    this.y = Math.round(this.y / 32) * 32;
+                break;
+
+            case Direction.UP:
+                if (this.direction === Direction.LEFT || this.direction === Direction.RIGHT)
+                    this.y = Math.floor(this.y / 32) * 32;
+                break;
+
+            case Direction.LEFT:
+                if (this.direction === Direction.UP) this.x -= 13;
                 break;
             case Direction.RIGHT:
-                this.y = gridPos.y * 32;
-                switch (this.direction) {
-                    case Direction.UP:
-                        this.x = Math.floor(this.x / 32) * 32 + 32
-                        break;
-                }
-                break;
-            case Direction.LEFT:
-                switch (this.direction) {
-                    case Direction.UP:
-                        this.x -= 16
-                        break;
-                }
+                if (this.direction === Direction.UP) this.x = Math.floor(this.x / 32) * 32 + 32;
                 break;
         }
     }
@@ -768,7 +776,7 @@ class Ghost {
             }
         } else {
 
-            if (this.isScared === true) this.movementSpeed = 1.5 * this.movementSpeedMultiplier;
+            if (this.isScared === true) this.movementSpeed = 2 * this.movementSpeedMultiplier;
             else this.movementSpeed = 2.5 * this.movementSpeedMultiplier;
             this.hasHitWall = false;
         }
