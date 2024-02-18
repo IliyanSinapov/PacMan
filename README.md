@@ -12,6 +12,6 @@ You can play the game online at [iliyansinapov.github.io/PacMan](https://iliyans
 
 ## Assets
 
-- The music track "Land with No Dragons" (music2.mp3) is made by TipTopTomCat and can be found at [tiptoptomcat.itch.io/8-bit-gameboy-songs-gb-studio](https://tiptoptomcat.itch.io/8-bit-gameboy-songs-gb-studio). Please consider supporting the music creator if you want to use the track in your own projects.
+- The music track "Land with No Dragons" (game.mp3) is made by TipTopTomCat and can be found at [tiptoptomcat.itch.io/8-bit-gameboy-songs-gb-studio](https://tiptoptomcat.itch.io/8-bit-gameboy-songs-gb-studio). Please consider supporting the music creator if you want to use the track in your own projects.
 
-- The music track "8Bit DNA" (music1.wav) is made by Tim Beek and can be found at [timbeek.itch.io/royalty-free-music-pack](https://timbeek.itch.io/royalty-free-music-pack). Please consider supporting the music creator if you want to use the track in your own projects.
+- The music track "8Bit DNA" (menu.wav) is made by Tim Beek and can be found at [timbeek.itch.io/royalty-free-music-pack](https://timbeek.itch.io/royalty-free-music-pack). Please consider supporting the music creator if you want to use the track in your own projects.

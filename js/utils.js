@@ -54,7 +54,7 @@ var sounds = {
     ateAGhost: new Audio('assets/sounds/ateAGhost.wav'),
     start: new Audio('assets/sounds/start.mp3'),
     ghostScared: new Audio('assets/sounds/ghostScared.mp3'),
-    wakaWaka: new Audio('assets/sounds/audiomass-output(1).mp3')
+    wakaWaka: new Audio('assets/sounds/wakaWaka.mp3')
 }
 
 sounds.wakaWaka.playbackRate = 2.5;

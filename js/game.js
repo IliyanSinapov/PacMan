@@ -20,12 +20,12 @@ var coins;
 var player = new Player(_width / 2 - 16, _height / 2 + 48, _width, _height, maze);
 
 
-// var blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
+var blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
 var pinky = new Ghost(11 * 32, 11 * 32, GhostImages[1], _width, _height, maze, player);
 var kinky = new Ghost(13 * 32, 11 * 32, GhostImages[2], _width, _height, maze, player);
 var clyde = new Ghost(9 * 32, 11 * 32, GhostImages[3], _width, _height, maze, player);
 
-this.player.ghosts = [pinky, kinky, clyde];
+this.player.ghosts = [blinky, pinky, kinky, clyde];
 
 // Functions
 const update = () => {
@@ -36,7 +36,7 @@ const update = () => {
     }
 
     player.update();
-    // blinky.update();
+    blinky.update();
     pinky.update();
     kinky.update();
     clyde.update();
@@ -51,7 +51,7 @@ const render = () => {
     });
 
     player.render(context);
-    // blinky.render(context);
+    blinky.render(context);
     pinky.render(context);
     kinky.render(context);
     clyde.render(context);
@@ -72,18 +72,18 @@ const restartLevel = () => {
     player = new Player(_width / 2 - 16, _height / 2 + 48, _width, _height, maze);
     player.score = currentScore;
 
-    // blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
+    blinky = new Ghost(11 * 32, 9 * 32, GhostImages[0], _width, _height, maze, player);
     pinky = new Ghost(11 * 32, 11 * 32, GhostImages[1], _width, _height, maze, player);
     kinky = new Ghost(13 * 32, 11 * 32, GhostImages[2], _width, _height, maze, player);
     clyde = new Ghost(9 * 32, 11 * 32, GhostImages[3], _width, _height, maze, player);
 
-    this.player.ghosts = [pinky, kinky, clyde];
+    this.player.ghosts = [blinky, pinky, kinky, clyde];
 
     player.x = _width / 2 - 16;
     player.y = _height / 2 + 48;
 
-    // blinky.x = 11 * 32;
-    // blinky.y = 9 * 32;
+    blinky.x = 11 * 32;
+    blinky.y = 9 * 32;
 
     pinky.x = 11 * 32;
     pinky.y = 11 * 32;
