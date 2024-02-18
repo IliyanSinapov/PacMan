@@ -654,6 +654,9 @@ class Ghost {
             if (previousDirection === neighnoringCells[0].direction) {
                 this.centerGhost(previousDirection, gridPos);
                 return;
+            } else {
+                this.path = null;
+                this.findPath();
             }
             this.direction = neighnoringCells[0].direction
         } else if (this.isScared === true) {
@@ -661,6 +664,9 @@ class Ghost {
             if (previousDirection === neighnoringCells[0].direction) {
                 this.centerGhost(previousDirection, gridPos);
                 return;
+            } else {
+                this.path = null;
+                this.findPath();
             }
             if (neighnoringCells[neighnoringCells.length - 1].value <= 10)
                 this.direction = neighnoringCells[0].direction
