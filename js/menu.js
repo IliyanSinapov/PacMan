@@ -3,6 +3,8 @@ const settingsUi = document.querySelector('.settings');
 const game = document.querySelector('.game');
 const bestScoreElement = document.querySelector('.best-score');
 
+const isChromiumBased = navigator.vendor.includes("Google Inc.");
+
 const buttons = {
     start: document.querySelector('#start'),
     settings: document.querySelector('#settings'),
@@ -56,5 +58,11 @@ buttons.settings.addEventListener('click', () => {
 
 buttons.exit.addEventListener('click', () => {
     sounds.slect.play();
-    window.close();
+
+    if (confirm('Are you sure you want to exit?'))
+        window.close();
 });
+
+if (isChromiumBased) {
+    buttons.exit.style.display = "none";
+}
