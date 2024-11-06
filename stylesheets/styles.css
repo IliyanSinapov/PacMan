@@ -152,6 +152,9 @@ canvas {
     }
 
     .game {
+        position: fixed;
+        top: -15%;
+
         scale: .55;
     }
 }
