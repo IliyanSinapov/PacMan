@@ -5,6 +5,8 @@ const context = canvas.getContext('2d');
 const _width = canvas.width = 23 * 16 * 2;
 const _height = canvas.height = 23 * 16 * 2;
 
+const dirBtns = document.querySelectorAll('.dir-btn');
+
 // Variables
 var paused = true;
 var gameOver = false;
@@ -101,37 +103,75 @@ document.addEventListener('keydown', (event) => {
     const playerCoords = [player.x / 32, player.y / 32]
 
     if (!paused)
-        switch (event.key) {
-            case keyBindings.up:
-                if (playerCoords[0] === Math.floor(playerCoords[0])) {
-                    player.direction = Direction.UP;
-                    player.pendingDirection = null;
-                } else player.pendingDirection = Direction.UP;
-                break;
+        if (window.innerWidth > 767)
+            switch (event.key) {
+                case keyBindings.up:
+                    if (playerCoords[0] === Math.floor(playerCoords[0])) {
+                        player.direction = Direction.UP;
+                        player.pendingDirection = null;
+                    } else player.pendingDirection = Direction.UP;
+                    break;
 
-            case keyBindings.right:
-                if (playerCoords[1] === Math.floor(playerCoords[1])) {
-                    player.direction = Direction.RIGHT;
-                    player.pendingDirection = null;
-                } else player.pendingDirection = Direction.RIGHT;
-                break;
+                case keyBindings.right:
+                    if (playerCoords[1] === Math.floor(playerCoords[1])) {
+                        player.direction = Direction.RIGHT;
+                        player.pendingDirection = null;
+                    } else player.pendingDirection = Direction.RIGHT;
+                    break;
 
-            case keyBindings.down:
-                if (playerCoords[0] === Math.floor(playerCoords[0])) {
-                    player.direction = Direction.DOWN;
-                    player.pendingDirection = null;
-                } else player.pendingDirection = Direction.DOWN;
-                break;
+                case keyBindings.down:
+                    if (playerCoords[0] === Math.floor(playerCoords[0])) {
+                        player.direction = Direction.DOWN;
+                        player.pendingDirection = null;
+                    } else player.pendingDirection = Direction.DOWN;
+                    break;
 
-            case keyBindings.left:
-                if (playerCoords[1] === Math.floor(playerCoords[1])) {
-                    player.direction = Direction.LEFT;
-                    player.pendingDirection = null;
-                } else player.pendingDirection = Direction.LEFT;
-                break;
-        }
+                case keyBindings.left:
+                    if (playerCoords[1] === Math.floor(playerCoords[1])) {
+                        player.direction = Direction.LEFT;
+                        player.pendingDirection = null;
+                    } else player.pendingDirection = Direction.LEFT;
+                    break;
+            }
 
     if (event.key === 'p') paused = !paused;
+});
+
+dirBtns.forEach(element => {
+    element.addEventListener('click', () => {
+    const playerCoords = [player.x / 32, player.y / 32]
+
+        if (!paused)
+            switch (element.getAttribute('id')) {
+                case Direction.UP:
+                    if (playerCoords[0] === Math.floor(playerCoords[0])) {
+                        player.direction = Direction.UP;
+                        player.pendingDirection = null;
+                    } else player.pendingDirection = Direction.UP;
+                    break;
+
+                case Direction.RIGHT:
+                    if (playerCoords[1] === Math.floor(playerCoords[1])) {
+                        player.direction = Direction.RIGHT;
+                        player.pendingDirection = null;
+                    } else player.pendingDirection = Direction.RIGHT;
+                    break;
+
+                case Direction.DOWN:
+                    if (playerCoords[0] === Math.floor(playerCoords[0])) {
+                        player.direction = Direction.DOWN;
+                        player.pendingDirection = null;
+                    } else player.pendingDirection = Direction.DOWN;
+                    break;
+
+                case Direction.LEFT:
+                    if (playerCoords[1] === Math.floor(playerCoords[1])) {
+                        player.direction = Direction.LEFT;
+                        player.pendingDirection = null;
+                    } else player.pendingDirection = Direction.LEFT;
+                    break;
+            }
+    });
 });
 
 const gameLoop = () => {

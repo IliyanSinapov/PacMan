@@ -42,6 +42,9 @@ class Player {
     }
 
     update() {
+
+        console.log()
+
         this.updateAnimation();
         if (this.hasHitGhost === false)
             this.checkIfHasHitGhost();

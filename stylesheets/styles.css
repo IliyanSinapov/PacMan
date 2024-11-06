@@ -136,12 +136,33 @@ canvas {
     transform: translateY(20%);
 }
 
+.mobile-controlls {
+    display: none;
+    gap: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+    .mobile-controlls {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        position: fixed;
+        bottom: 1rem;
+        align-items: center;
+    }
+
+    .game {
+        scale: .55;
+    }
+}
+
 
 @keyframes slideIn {
     from {
         transform: translateY(-100%);
         scale: 0;
     }
+
     to {
         transform: translateY(0);
         scale: 1;
@@ -153,8 +174,9 @@ canvas {
         transform: translateY(0);
         scale: 1;
     }
+
     to {
         transform: translateY(-100%);
         scale: 0;
-    }    
+    }
 }
