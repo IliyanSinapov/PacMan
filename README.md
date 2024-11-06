@@ -1,6 +1,6 @@
 # PacMan
 
-This is a personal project created by [Your Name] for the PacMan game.
+This is a personal project for the PacMan game.
 
 ## Description
 
